@@ -57,6 +57,6 @@ jobs:
             mkdir -p /root/backend
             cd /root/backend
             docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
-            docker compose down || true
-            docker compose pull || true
-            docker compose up -d
+            docker-compose down || true
+            docker-compose pull || true
+            docker-compose up -d
