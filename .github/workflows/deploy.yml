@@ -39,23 +39,24 @@ jobs:
           tags: hbd0214/234-deploylab-backend:latest
 
       - name: Copy docker-compose to server
-        uses: appleboy/scp-action@v0.10.0
+        uses: appleboy/scp-action@v0.10.0  # 这里改了
         with:
           host: ${{ secrets.HOST_SERVER }}
-          username: ${{ secrets.HOST_USER_NAME }}
+          username: root                  # 这里必须是 root！
           key: ${{ secrets.HOST_SSH_PRIVATE_KEY }}
           source: "docker-compose.yml"
-          target: "/home/ubuntu/backend"
+          target: "/root/backend"
 
       - name: Deploy to server
-        uses: appleboy/ssh-action@v0.10.0
+        uses: appleboy/ssh-action@v0.10.0  # 这里改了
         with:
           host: ${{ secrets.HOST_SERVER }}
-          username: ${{ secrets.HOST_USER_NAME }}
+          username: root                  # 这里必须是 root！
           key: ${{ secrets.HOST_SSH_PRIVATE_KEY }}
           script: |
-            cd /home/ubuntu/backend
+            mkdir -p /root/backend
+            cd /root/backend
             docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
-            docker compose down
-            docker compose pull
+            docker compose down || true
+            docker compose pull || true
             docker compose up -d
