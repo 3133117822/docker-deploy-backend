@@ -39,7 +39,7 @@ jobs:
           tags: hbd0214/234-deploylab-backend:latest
 
       - name: Copy docker-compose to server
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.10.0
         with:
           host: ${{ secrets.HOST_SERVER }}
           username: ${{ secrets.HOST_USER_NAME }}
@@ -48,7 +48,7 @@ jobs:
           target: "/home/ubuntu/backend"
 
       - name: Deploy to server
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.10.0
         with:
           host: ${{ secrets.HOST_SERVER }}
           username: ${{ secrets.HOST_USER_NAME }}
