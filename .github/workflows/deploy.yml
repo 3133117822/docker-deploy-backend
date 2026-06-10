@@ -42,6 +42,7 @@ jobs:
         run: |
           docker pull hbd0214/234-deploylab-backend:latest
           docker save hbd0214/234-deploylab-backend:latest -o backend-image.tar
+          chmod 666 backend-image.tar
 
       - name: Copy image and docker-compose to server
         uses: appleboy/scp-action@v0.1.7
