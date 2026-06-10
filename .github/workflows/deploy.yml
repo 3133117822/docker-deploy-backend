@@ -38,25 +38,29 @@ jobs:
           push: true
           tags: hbd0214/234-deploylab-backend:latest
 
-      - name: Copy docker-compose to server
+      - name: Save Docker image to tar
+        run: |
+          docker pull hbd0214/234-deploylab-backend:latest
+          docker save hbd0214/234-deploylab-backend:latest -o backend-image.tar
+
+      - name: Copy image and docker-compose to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST_SERVER }}
           username: root
           key: ${{ secrets.HOST_SSH_PRIVATE_KEY }}
-          source: "docker-compose.yml"
+          source: "backend-image.tar,docker-compose.yml"
           target: "/root/backend"
 
-      - name: Deploy to server
+      - name: Load image and deploy
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.HOST_SERVER }}
           username: root
           key: ${{ secrets.HOST_SSH_PRIVATE_KEY }}
           script: |
-            mkdir -p /root/backend
             cd /root/backend
-            docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+            docker load -i backend-image.tar
             docker-compose down || true
-            docker-compose pull || true
             docker-compose up -d
+            rm -f backend-image.tar
